@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TKBApiClient {
-    private static final String BASE_URL = "http://localhost:8080/api/tkb";
+    private static final String BASE_URL = "http://26.44.245.147:8080/api/tkb";
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 

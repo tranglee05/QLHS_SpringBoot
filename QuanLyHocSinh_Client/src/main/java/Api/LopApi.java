@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LopApi {
-    private static final String SERVER_URL = "http://localhost:8080/api/lop";
+    private static final String SERVER_URL = "http://26.44.245.147:8080/api/lop";
     private HttpClient client;
     private Gson gson;
 

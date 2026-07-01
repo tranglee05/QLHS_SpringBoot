@@ -17,7 +17,7 @@ import java.lang.reflect.Type;
 
 public class LichThiApi {
 
-    private static final String BASE_URL = "http://localhost:8080/api/lichthi";
+    private static final String BASE_URL = "http://26.44.245.147:8080/api/lichthi";
     private HttpClient client;
     private Gson gson;
 

@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 public class HanhKiemApi {
-    private static final String BASE_URL = "http://localhost:8080/api/hanhkiem";
+    private static final String BASE_URL = "http://26.44.245.147:8080/api/hanhkiem";
     private HttpClient client;
     private Gson gson;
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiemApi {
-    private static final String SERVER_URL = "http://localhost:8080/api/diem";
+    private static final String SERVER_URL = "http://26.44.245.147:8080/api/diem";
     private HttpClient client;
     private Gson gson;
 

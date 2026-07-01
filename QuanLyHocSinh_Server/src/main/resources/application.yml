@@ -3,8 +3,8 @@ server:
 
 spring:
   datasource:
-   # url: jdbc:sqlserver://localhost:1433;databaseName=QuanLyHocSinh;encrypt=true;trustServerCertificate=true
-    url: jdbc:sqlserver://localhost:61091;databaseName=QuanLyHocSinh;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://localhost:1433;databaseName=QuanLyHocSinh;encrypt=true;trustServerCertificate=true
+    # url: jdbc:sqlserver://localhost:61091;databaseName=QuanLyHocSinh;encrypt=true;trustServerCertificate=true
     username: sa
     password: 123456
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -12,7 +12,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none # Tự động tạo hoặc cập nhật bảng trong DB dựa trên Entity
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
