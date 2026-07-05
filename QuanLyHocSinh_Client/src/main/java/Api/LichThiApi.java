@@ -82,13 +82,14 @@ public class LichThiApi {
         return new ArrayList<>();
     }
 
-    public List<LichThi> getLichThiByFilter(String kyThi, String maMH, String maPhong) {
+    public List<LichThi> getLichThiByFilter(String kyThi, String maMH, String maPhong, String maLop) {
         try {
-            String url = String.format("%s/filter?kyThi=%s&maMH=%s&maPhong=%s",
+            String url = String.format("%s/filter?kyThi=%s&maMH=%s&maPhong=%s&maLop=%s",
                     BASE_URL,
                     URLEncoder.encode(kyThi, StandardCharsets.UTF_8),
                     URLEncoder.encode(maMH, StandardCharsets.UTF_8),
-                    URLEncoder.encode(maPhong, StandardCharsets.UTF_8));
+                    URLEncoder.encode(maPhong, StandardCharsets.UTF_8),
+                    URLEncoder.encode(maLop, StandardCharsets.UTF_8));
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .GET()

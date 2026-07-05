@@ -11,6 +11,7 @@ package Model;
 public class Hocphi {
     private int maHP;
     private String maHS;
+    private String tenHocSinh;
     private String maLop;
     private int hocKy;
     private String namHoc;
@@ -22,9 +23,10 @@ public class Hocphi {
     public Hocphi() {
     }
 
-    public Hocphi(int maHP, String maHS, String maLop, int hocKy, String namHoc, long tongTien, long mienGiam, long phaiDong, String trangThai) {
+    public Hocphi(int maHP, String maHS, String tenHocSinh, String maLop, int hocKy, String namHoc, long tongTien, long mienGiam, long phaiDong, String trangThai) {
         this.maHP = maHP;
         this.maHS = maHS;
+        this.tenHocSinh = tenHocSinh;
         this.maLop = maLop;
         this.hocKy = hocKy;
         this.namHoc = namHoc;
@@ -48,6 +50,14 @@ public class Hocphi {
 
     public void setMaHS(String maHS) {
         this.maHS = maHS;
+    }
+
+    public String getTenHocSinh() {
+        return tenHocSinh;
+    }
+
+    public void setTenHocSinh(String tenHocSinh) {
+        this.tenHocSinh = tenHocSinh;
     }
 
     public String getMaLop() {

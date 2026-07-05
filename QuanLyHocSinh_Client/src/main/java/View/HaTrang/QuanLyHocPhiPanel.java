@@ -23,6 +23,7 @@ public class QuanLyHocPhiPanel extends JPanel {
     private JTable tableHocPhi;
     private DefaultTableModel tableModel;
     private JTextField txtMaHS, txtTongTien, txtMienGiam, txtPhaiDong;
+    private JTextField txtTenHSCT;
     private JComboBox<String> cboTrangThai;
 
     // Component UI cho học sinh
@@ -41,6 +42,9 @@ public class QuanLyHocPhiPanel extends JPanel {
 
         // 1. KHỞI TẠO COMPONENT (Luôn chạy để tránh NullPointerException)
         txtMaHS = new JTextField();
+        txtTenHSCT = new JTextField();
+        txtTenHSCT.setEditable(false);
+        txtTenHSCT.setBackground(new Color(245, 245, 245));
         txtMaLopCT = new JTextField();
         txtMaLopCT.setEditable(false);
         cboHocKyCT = new JComboBox<>(new String[]{"1","2"});
@@ -88,12 +92,16 @@ public class QuanLyHocPhiPanel extends JPanel {
         add(pnlNorth, BorderLayout.NORTH);
 
         // --- TABLE ---
-        String[] cols = {"ID", "Mã HS", "Mã Lớp", "Kỳ", "Năm học", "Tổng tiền", "Miễn giảm", "Phải đóng", "Trạng thái"};
+        String[] cols = {"ID", "Mã HS", "Tên Học Sinh", "Mã Lớp", "Kỳ", "Năm học", "Tổng tiền", "Miễn giảm", "Phải đóng", "Trạng thái"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
         };
         tableHocPhi = new JTable(tableModel);
+        
+        // Hide Mã HS column
+        tableHocPhi.getColumnModel().removeColumn(tableHocPhi.getColumnModel().getColumn(1));
+        
         TableSortHelper.enableTableSorting(tableHocPhi);
         tableHocPhi.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         tableHocPhi.setRowHeight(30);
@@ -118,7 +126,7 @@ public class QuanLyHocPhiPanel extends JPanel {
         // 2. PHÂN CHIA GIAO DIỆN CHUẨN (KHÔNG BỊ TRÙNG LẶP CODE ĐÈ NHAU)
         if (!Model.Auth.isHocSinh()) {
             // --- Giao diện dành cho Giáo viên / Admin ---
-            JPanel pnlInput = new JPanel(new GridLayout(4, 4, 15, 10));
+            JPanel pnlInput = new JPanel(new GridLayout(5, 4, 15, 10));
             pnlInput.setBackground(Color.WHITE);
             pnlInput.setBorder(BorderFactory.createCompoundBorder(
                     new TitledBorder("Thông tin chi tiết"),
@@ -126,6 +134,7 @@ public class QuanLyHocPhiPanel extends JPanel {
             ));
 
             pnlInput.add(new JLabel("Mã Học Sinh:"));   pnlInput.add(txtMaHS);
+            pnlInput.add(new JLabel("Tên Học Sinh:"));  pnlInput.add(txtTenHSCT);
             pnlInput.add(new JLabel("Mã Lớp:"));      pnlInput.add(txtMaLopCT);
             pnlInput.add(new JLabel("Học Kỳ:"));      pnlInput.add(cboHocKyCT);
             pnlInput.add(new JLabel("Năm Học:"));     pnlInput.add(txtNamHocCT);
@@ -133,6 +142,7 @@ public class QuanLyHocPhiPanel extends JPanel {
             pnlInput.add(new JLabel("Miễn Giảm:"));    pnlInput.add(txtMienGiam);
             pnlInput.add(new JLabel("Phải Đóng:"));    pnlInput.add(txtPhaiDong);
             pnlInput.add(new JLabel("Trạng Thái:"));   pnlInput.add(cboTrangThai);
+            pnlInput.add(new JLabel(""));              pnlInput.add(new JLabel(""));
 
             pnlSouth.add(pnlInput, BorderLayout.CENTER);
 
@@ -243,15 +253,17 @@ public class QuanLyHocPhiPanel extends JPanel {
                 int r = tableHocPhi.getSelectedRow();
                 if (r >= 0) {
                     txtMaHS.setText(tableModel.getValueAt(r, 1).toString());
+                    Object tenHS = tableModel.getValueAt(r, 2);
+                    txtTenHSCT.setText(tenHS != null ? tenHS.toString() : "");
                     txtMaHS.setEditable(false);
-                    txtMaLopCT.setText(tableModel.getValueAt(r,2).toString());
-                    cboHocKyCT.setSelectedItem(tableModel.getValueAt(r,3).toString());
-                    txtNamHocCT.setText(tableModel.getValueAt(r,4).toString());
-                    txtTongTien.setText(tableModel.getValueAt(r, 5).toString());
-                    txtMienGiam.setText(tableModel.getValueAt(r, 6).toString());
-                    txtPhaiDong.setText(tableModel.getValueAt(r, 7).toString());
+                    txtMaLopCT.setText(tableModel.getValueAt(r,3).toString());
+                    cboHocKyCT.setSelectedItem(tableModel.getValueAt(r,4).toString());
+                    txtNamHocCT.setText(tableModel.getValueAt(r,5).toString());
+                    txtTongTien.setText(tableModel.getValueAt(r, 6).toString());
+                    txtMienGiam.setText(tableModel.getValueAt(r, 7).toString());
+                    txtPhaiDong.setText(tableModel.getValueAt(r, 8).toString());
 
-                    Object trangThaiValue = tableModel.getValueAt(r, 8);
+                    Object trangThaiValue = tableModel.getValueAt(r, 9);
                     String trangThai = (trangThaiValue == null || trangThaiValue.toString().trim().isEmpty())
                             ? "Chưa đóng"
                             : trangThaiValue.toString();
@@ -303,6 +315,23 @@ public class QuanLyHocPhiPanel extends JPanel {
             setCrudButtonState(true, false, false, false, false);
             setInputEditable(false);
         }
+        
+        txtMaHS.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                String maHS = txtMaHS.getText().trim();
+                if (!maHS.isEmpty()) {
+                    Model.HocSinh hs = new Api.HocSinhApi().getHocSinh(maHS);
+                    if (hs != null) {
+                        txtTenHSCT.setText(hs.getHoTen());
+                    } else {
+                        txtTenHSCT.setText("Không tìm thấy học sinh");
+                    }
+                } else {
+                    txtTenHSCT.setText("");
+                }
+            }
+        });
     }
 
     private JPanel createInfoCard(String title, JLabel lblValue, Color bgColor) {
@@ -329,7 +358,7 @@ public class QuanLyHocPhiPanel extends JPanel {
                     ? "Chưa đóng"
                     : hp.getTrangThai();
             tableModel.addRow(new Object[]{
-                    hp.getMaHP(), hp.getMaHS(), hp.getMaLop(), hp.getHocKy(),
+                    hp.getMaHP(), hp.getMaHS(), hp.getTenHocSinh(), hp.getMaLop(), hp.getHocKy(),
                     hp.getNamHoc(), hp.getTongTien(), hp.getMienGiam(), hp.getPhaiDong(),
                     trangThai
             });
@@ -339,6 +368,7 @@ public class QuanLyHocPhiPanel extends JPanel {
     public void refreshForm() {
         txtMaHS.setText("");
         txtMaHS.setEditable(true);
+        txtTenHSCT.setText("");
         txtMaLopCT.setText("");
         txtNamHocCT.setText("");
         cboHocKyCT.setSelectedIndex(0);

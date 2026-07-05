@@ -24,6 +24,9 @@ public class HocPhi {
     @Transient
     private String maLop;
 
+    @Transient
+    private String tenHocSinh;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MaHS", insertable = false, updatable = false)
     @com.fasterxml.jackson.annotation.JsonIgnore
@@ -35,6 +38,14 @@ public class HocPhi {
 
     public void setMaLop(String maLop) {
         this.maLop = maLop;
+    }
+
+    public String getTenHocSinh() {
+        return (hocSinh != null) ? hocSinh.getHoTen() : this.tenHocSinh;
+    }
+
+    public void setTenHocSinh(String tenHocSinh) {
+        this.tenHocSinh = tenHocSinh;
     }
 
     @Column(name = "HocKy")

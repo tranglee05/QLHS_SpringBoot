@@ -14,6 +14,8 @@ import Model.MonHoc;
 import Model.PhongHoc;
 import Api.MonHocApiClient;
 import Api.PhongHocApiClient;
+import Api.LopApi;
+import Model.LopGVCN;
 
 public class LichThiController {
     
@@ -50,6 +52,14 @@ public class LichThiController {
                 tenPhongs.add(p.getTenPhong()); // Hiển thị tên phòng thay vì mã
             }
             view.setPhongHocData(tenPhongs);
+
+            LopApi lopApi = new LopApi();
+            List<LopGVCN> lopList = lopApi.getAllLop();
+            List<String> maLops = new ArrayList<>();
+            for (LopGVCN l : lopList) {
+                maLops.add(l.getMaLop());
+            }
+            view.setLopData(maLops);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,6 +77,7 @@ public class LichThiController {
             String kyThi = view.getKyThiFilter();
             String tenMon = view.getMonFilter();
             String phong = view.getPhongFilter();
+            String maLop = view.getLopFilter();
             
             String maMH = "";
             if (!tenMon.isEmpty() && monHocList != null) {
@@ -78,7 +89,7 @@ public class LichThiController {
                 }
             }
             
-            List<LichThi> list = dao.getLichThiByFilter(kyThi, maMH, phong);
+            List<LichThi> list = dao.getLichThiByFilter(kyThi, maMH, phong, maLop);
             view.setTableData(list);
             if (list.isEmpty()) view.showMessage("Không tìm thấy lịch thi phù hợp!");
         });
@@ -164,8 +175,8 @@ public class LichThiController {
                 }
             }
 
-            if (lt.getMaMH().isEmpty() || lt.getNgayThi().isEmpty()) {
-                view.showMessage("Vui lòng nhập Mã môn và Ngày thi!");
+            if (lt.getMaMH().isEmpty() || lt.getNgayThi().isEmpty() || lt.getMaLop().isEmpty()) {
+                view.showMessage("Vui lòng chọn Môn học, Ngày thi và Lớp!");
                 return;
             }
             
@@ -182,12 +193,13 @@ public class LichThiController {
                 view.showMessage("Lỗi định dạng giờ!");
                 return;
             }
-
+ 
             // Kiểm tra trùng lịch thi (Overlap Check)
             List<LichThi> allExams = dao.getAllLichThi();
             for (LichThi existing : allExams) {
                 if (existing.getMaLT() == lt.getMaLT()) continue; // Bỏ qua chính nó khi sửa
                 
+                // Trùng phòng học: Cùng ngày, cùng phòng, trùng giờ
                 if (existing.getNgayThi() != null && existing.getMaPhong() != null &&
                     existing.getNgayThi().equals(lt.getNgayThi()) && 
                     existing.getMaPhong().equals(lt.getMaPhong())) {
@@ -197,6 +209,19 @@ public class LichThiController {
                         lt.getGioKetThuc().compareTo(existing.getGioBatDau()) > 0) {
                         view.showMessage(String.format("Lỗi: Trùng lịch với Mã LT %d (từ %s đến %s) cùng ngày, cùng phòng!", 
                             existing.getMaLT(), existing.getGioBatDau(), existing.getGioKetThuc()));
+                        return;
+                    }
+                }
+
+                // Trùng lịch của lớp: Cùng ngày, cùng lớp, trùng giờ
+                if (existing.getNgayThi() != null && existing.getMaLop() != null &&
+                    existing.getNgayThi().equals(lt.getNgayThi()) &&
+                    existing.getMaLop().equals(lt.getMaLop())) {
+                    
+                    if (lt.getGioBatDau().compareTo(existing.getGioKetThuc()) < 0 && 
+                        lt.getGioKetThuc().compareTo(existing.getGioBatDau()) > 0) {
+                        view.showMessage(String.format("Lỗi: Lớp %s đã có lịch thi khác (Mã LT %d, từ %s đến %s) cùng ngày và giờ!", 
+                            lt.getMaLop(), existing.getMaLT(), existing.getGioBatDau(), existing.getGioKetThuc()));
                         return;
                     }
                 }

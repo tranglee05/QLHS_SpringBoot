@@ -35,13 +35,26 @@ public class LichThi {
     @Column(name = "MaPhong", length = 50)
     private String maPhong;
 
+    @Column(name = "MaLop", length = 10)
+    private String maLop;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MaMH", insertable = false, updatable = false)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private MonHoc monHoc;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MaLop", insertable = false, updatable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Lop lop;
+
     @Transient
     public String getTenMH() {
         return monHoc != null ? monHoc.getTenMH() : null;
+    }
+
+    @Transient
+    public String getTenLop() {
+        return lop != null ? lop.getTenLop() : null;
     }
 }

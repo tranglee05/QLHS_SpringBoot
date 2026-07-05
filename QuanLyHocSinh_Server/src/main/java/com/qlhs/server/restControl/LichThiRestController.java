@@ -32,8 +32,9 @@ public class LichThiRestController {
     @GetMapping("/filter")
     public List<LichThi> filter(@RequestParam(required = false, defaultValue = "") String kyThi,
             @RequestParam(required = false, defaultValue = "") String maMH,
-            @RequestParam(required = false, defaultValue = "") String maPhong) {
-        return lichThiService.getLichThiByFilter(kyThi, maMH, maPhong);
+            @RequestParam(required = false, defaultValue = "") String maPhong,
+            @RequestParam(required = false, defaultValue = "") String maLop) {
+        return lichThiService.getLichThiByFilter(kyThi, maMH, maPhong, maLop);
     }
 
     @PostMapping

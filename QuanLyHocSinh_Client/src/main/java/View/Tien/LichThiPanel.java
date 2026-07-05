@@ -20,7 +20,7 @@ public class LichThiPanel extends JPanel {
     // Phần tìm kiếm và lọc
     private JTextField txtTimKiem;
     private JButton btnTimKiem, btnXemTatCa, btnLocDanhSach;
-    private JComboBox<String> cboLocKyThi, cboLocMon, cboLocPhong;
+    private JComboBox<String> cboLocKyThi, cboLocMon, cboLocPhong, cboLocLop;
     
     // Phần bảng dữ liệu
     private JTable table;
@@ -31,7 +31,7 @@ public class LichThiPanel extends JPanel {
     private JButton btnXuatExcel;
     
     // Form nhập liệu chi tiết
-    private JComboBox<String> cboMaLT, cboTenMH, cboTenPhong, cboTenKyThi;
+    private JComboBox<String> cboMaLT, cboTenMH, cboTenPhong, cboTenKyThi, cboLop;
     private JDateChooser dateNgayThi;
     private JSpinner spinGioBatDau, spinGioKetThuc;
     
@@ -70,6 +70,9 @@ public class LichThiPanel extends JPanel {
         
         pnlFilter.add(new JLabel("Phòng:"));
         cboLocPhong = new JComboBox<>(); pnlFilter.add(cboLocPhong);
+
+        pnlFilter.add(new JLabel("Lớp:"));
+        cboLocLop = new JComboBox<>(); pnlFilter.add(cboLocLop);
         
         btnLocDanhSach = new JButton("Lọc Danh Sách");
         ButtonStyleHelper.styleButtonFilter(btnLocDanhSach);
@@ -95,7 +98,7 @@ public class LichThiPanel extends JPanel {
         add(pnlNorth, BorderLayout.NORTH);
 
         // 2. PHẦN GIỮA (CENTER): Bảng danh sách lịch thi
-        String[] cols = {"Mã LT", "Kỳ Thi", "Tên Môn", "Ngày Thi", "Bắt Đầu", "Kết Thúc", "Phòng"};
+        String[] cols = {"Mã LT", "Kỳ Thi", "Tên Môn", "Lớp", "Ngày Thi", "Bắt Đầu", "Kết Thúc", "Phòng"};
         model = new DefaultTableModel(cols, 0);
         table = new JTable(model);
         TableSortHelper.enableTableSorting(table);
@@ -168,12 +171,18 @@ public class LichThiPanel extends JPanel {
         gbc.gridx=3; gbc.gridy=2; gbc.weightx = 1.0;
         pnlInput.add(spinGioKetThuc, gbc);
 
-        // --- Dòng 4: Mã Phòng ---
+        // --- Dòng 4: Mã Phòng + Lớp ---
         gbc.gridx=0; gbc.gridy=3; gbc.weightx = 0;
         pnlInput.add(new JLabel("Tên Phòng:"), gbc);
         
         gbc.gridx=1; gbc.gridy=3; gbc.weightx = 1.0;
         cboTenPhong=new JComboBox<>(); cboTenPhong.setEditable(true); pnlInput.add(cboTenPhong, gbc);
+
+        gbc.gridx=2; gbc.gridy=3; gbc.weightx = 0;
+        pnlInput.add(new JLabel("Lớp:"), gbc);
+
+        gbc.gridx=3; gbc.gridy=3; gbc.weightx = 1.0;
+        cboLop = new JComboBox<>(); cboLop.setEditable(true); pnlInput.add(cboLop, gbc);
 
         pnlSouth.add(pnlInput, BorderLayout.CENTER);
 
@@ -228,6 +237,12 @@ public class LichThiPanel extends JPanel {
     public String getKyThiFilter() { return cboLocKyThi.getSelectedItem() != null ? cboLocKyThi.getSelectedItem().toString() : ""; }
     public String getMonFilter() { return cboLocMon.getSelectedItem() != null ? cboLocMon.getSelectedItem().toString() : ""; }
     public String getPhongFilter() { return cboLocPhong.getSelectedItem() != null ? cboLocPhong.getSelectedItem().toString() : ""; }
+    public String getLopFilter() {
+        if (cboLocLop.getSelectedItem() == null) return "";
+        String val = cboLocLop.getSelectedItem().toString();
+        if (val.equals("Tất cả")) return "";
+        return val;
+    }
 
     // --- Getter lấy từ khóa tìm kiếm ---
     public String getKeyword() { return txtTimKiem.getText().trim(); }
@@ -266,6 +281,16 @@ public class LichThiPanel extends JPanel {
         for (String p : phongs) {
             cboLocPhong.addItem(p);
             cboTenPhong.addItem(p);
+        }
+    }
+
+    public void setLopData(List<String> lops) {
+        cboLocLop.removeAllItems();
+        cboLop.removeAllItems();
+        cboLocLop.addItem("Tất cả");
+        for (String l : lops) {
+            cboLocLop.addItem(l);
+            cboLop.addItem(l);
         }
     }
     
@@ -309,6 +334,14 @@ public class LichThiPanel extends JPanel {
         lt.setGioKetThuc(timeFormat.format(spinGioKetThuc.getValue()));
         
         lt.setMaPhong(cboTenPhong.getSelectedItem() != null ? cboTenPhong.getSelectedItem().toString() : "");
+
+        Object lopObj = cboLop.getSelectedItem();
+        String lopStr = lopObj != null ? lopObj.toString() : "";
+        if (cboLop.getEditor().getItem() != null) {
+            lopStr = cboLop.getEditor().getItem().toString();
+        }
+        lt.setMaLop(lopStr);
+
         return lt;
     }
 
@@ -334,8 +367,9 @@ public class LichThiPanel extends JPanel {
         model.setRowCount(0);
         for(LichThi lt : list) {
             String tenMon = lt.getTenMH() != null && !lt.getTenMH().isEmpty() ? lt.getTenMH() : lt.getMaMH();
+            String lop = lt.getTenLop() != null && !lt.getTenLop().isEmpty() ? lt.getTenLop() : (lt.getMaLop() != null ? lt.getMaLop() : "");
             model.addRow(new Object[]{
-                lt.getMaLT(), lt.getTenKyThi(), tenMon, formatToDDMMYYYY(lt.getNgayThi()), 
+                lt.getMaLT(), lt.getTenKyThi(), tenMon, lop, formatToDDMMYYYY(lt.getNgayThi()), 
                 formatTime(lt.getGioBatDau()), formatTime(lt.getGioKetThuc()), lt.getMaPhong()
             });
         }
@@ -376,6 +410,9 @@ public class LichThiPanel extends JPanel {
             
             cboTenPhong.setSelectedItem(lt.getMaPhong());
             cboTenPhong.getEditor().setItem(lt.getMaPhong());
+
+            cboLop.setSelectedItem(lt.getMaLop());
+            cboLop.getEditor().setItem(lt.getMaLop());
         }
     }
     
@@ -387,6 +424,7 @@ public class LichThiPanel extends JPanel {
         spinGioBatDau.setValue(new java.util.Date()); 
         spinGioKetThuc.setValue(new java.util.Date()); 
         cboTenPhong.setSelectedItem(""); cboTenPhong.getEditor().setItem("");
+        cboLop.setSelectedItem(""); cboLop.getEditor().setItem("");
     }
     
     // --- Tiện ích thông báo & Getter Table ---
@@ -422,6 +460,7 @@ public class LichThiPanel extends JPanel {
         spinGioKetThuc.setEnabled(enabled);
         cboTenPhong.setEnabled(enabled);
         cboTenKyThi.setEnabled(enabled);
+        cboLop.setEnabled(enabled);
     }
     
     public void setCrudButtonState(boolean them, boolean sua, boolean xoa, boolean luu, boolean huy) {

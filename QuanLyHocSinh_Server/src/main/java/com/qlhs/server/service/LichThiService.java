@@ -24,10 +24,11 @@ public class LichThiService {
         return lichThiRepository.getDistinctKyThi();
     }
 
-    public List<LichThi> getLichThiByFilter(String tenKyThi, String maMH, String maPhong) {
-        return lichThiRepository.filterLichThi(tenKyThi, maMH, maPhong);
+    public List<LichThi> getLichThiByFilter(String tenKyThi, String maMH, String maPhong, String maLop) {
+        return lichThiRepository.filterLichThi(tenKyThi, maMH, maPhong, maLop);
     }
 
+    @SuppressWarnings("null")
     public LichThi save(LichThi lt) {
         return lichThiRepository.save(lt);
     }
