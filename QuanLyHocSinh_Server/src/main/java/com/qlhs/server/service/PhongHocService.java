@@ -13,28 +13,20 @@ public class PhongHocService {
     @Autowired
     private PhongHocRepository phongHocRepository;
 
-    public List<PhongHoc> getAllPH() {
-        return phongHocRepository.findAll();
-    }
-    public Optional<PhongHoc> getByIdPH(String maPhong){
-        return phongHocRepository.findById(maPhong);
-    }
+    public List<PhongHoc> getAllPH() { return phongHocRepository.findAll(); }
+
+    public Optional<PhongHoc> getByIdPH(String maPhong) { return phongHocRepository.findById(maPhong); }
+
     public List<PhongHoc> search(String ma, String loai, String tinhTrang) {
-        return phongHocRepository.findAll().stream()
-                .filter(p -> ma.isEmpty() || p.getMaPhong().contains(ma))
-                .filter(p -> loai.isEmpty() || loai.equals("Tất cả") || p.getLoaiPhong().equals(loai))
-                .filter(p -> tinhTrang.isEmpty() || tinhTrang.equals("Tất cả") || p.getTinhTrang().equals(tinhTrang))
-                .collect(java.util.stream.Collectors.toList());
+        return phongHocRepository.searchPhongHoc(ma, loai, tinhTrang);
     }
-    public PhongHoc save(PhongHoc phongHoc){
-        return phongHocRepository.save(phongHoc);
-    }
-    public void delete(String maPhong){
-        phongHocRepository.deleteById(maPhong);
-    }
-    public boolean existsPH(String maPhong){
-        return phongHocRepository.existsById(maPhong);
-    }
+
+    public PhongHoc save(PhongHoc phongHoc) { return phongHocRepository.save(phongHoc); }
+
+    public void delete(String maPhong) { phongHocRepository.deleteById(maPhong); }
+
+    public boolean existsPH(String maPhong) { return phongHocRepository.existsById(maPhong); }
+
     public boolean existsByTenPhong(String tenPhong) {
         return phongHocRepository.findAll().stream()
                 .anyMatch(p -> p.getTenPhong().equalsIgnoreCase(tenPhong));

@@ -17,30 +17,23 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/tkb")
 public class TKBRestController {
-    @Autowired
-    private TKBService tkbService;
-    @Autowired
-    private GiaoVienRepository giaoVienRepository;
-
-    @Autowired
-    private LopRepository lopRepository;
-
-    @Autowired
-    private PhongHocRepository phongHocRepository;
-
-    @Autowired
-    private MonHocRepository monHocRepository;
+    @Autowired private TKBService tkbService;
+    @Autowired private GiaoVienRepository giaoVienRepository;
+    @Autowired private LopRepository lopRepository;
+    @Autowired private PhongHocRepository phongHocRepository;
+    @Autowired private MonHocRepository monHocRepository;
 
     @GetMapping
     public List<TKB> getAllTKB() {
         return tkbService.getAllTKB();
     }
 
-    @GetMapping("/{maTKB}")
-    public ResponseEntity<TKB> getByIdTKB(@PathVariable Integer maTKB) {
-        return tkbService.getByIdTKB(maTKB)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/filter")
+    public List<TKB> filter(
+            @RequestParam(defaultValue = "") String maLop,
+            @RequestParam(defaultValue = "") String maMH,
+            @RequestParam(defaultValue = "0") int thu) {
+        return tkbService.filter(maLop, maMH, thu);
     }
 
     @GetMapping("/danhsachlop")
@@ -62,7 +55,6 @@ public class TKBRestController {
                 .collect(Collectors.toList());
     }
 
-
     @GetMapping("/danhsachphong")
     public List<Map<String, String>> getDanhSachPhong() {
         return phongHocRepository.findAll().stream()
@@ -75,14 +67,6 @@ public class TKBRestController {
         return giaoVienRepository.findAll().stream()
                 .map(g -> Map.of("ma", g.getMaGV(), "ten", g.getHoTen()))
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping("/filter")
-    public List<TKB> filter(
-            @RequestParam(defaultValue = "") String maLop,
-            @RequestParam(defaultValue = "") String maMH,
-            @RequestParam(defaultValue = "0") int thu) {
-        return tkbService.filter(maLop, maMH, thu);
     }
 
     @PostMapping
