@@ -97,9 +97,6 @@ public class HocPhiApiClient {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("Status = " + response.statusCode());
-            System.out.println("Response = " + response.body());
-
             return response.statusCode() == 200 || response.statusCode() == 201;
         } catch (Exception e) {
             e.printStackTrace();

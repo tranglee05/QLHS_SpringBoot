@@ -24,7 +24,6 @@ public class Hocphicontroller {
         this.view = view;
         this.dao = new HocPhiApiClient();
 
-        System.out.println("DEBUG Controller: Khởi tạo controller...");
         initEvents();
         loadTatCaDuLieu();
     }
@@ -143,8 +142,6 @@ public class Hocphicontroller {
         };
         view.getTxtTongTien().addKeyListener(tinhTienTuDong);
         view.getTxtMienGiam().addKeyListener(tinhTienTuDong);
-
-        System.out.println("DEBUG Controller: Controller khởi tạo xong!");
     }
 
     private String layMaLopTheoMaHS(String maHS) {

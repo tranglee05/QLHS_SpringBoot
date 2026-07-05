@@ -15,7 +15,7 @@ public class HocPhiService {
     private HocPhiRepository hocPhiRepository;
 
     public List<HocPhi> getAllHP() {
-        return hocPhiRepository.findAll();
+        return hocPhiRepository.findAllWithDetails();
     }
 
     public Optional<HocPhi> getByIdHP(int maHP) {
@@ -28,10 +28,10 @@ public class HocPhiService {
 
     public List<HocPhi> filter(String maLop,int hocKy,String namHoc){
 
-        return hocPhiRepository.findAll()
+        return hocPhiRepository.findAllWithDetails()
                 .stream()
                 .filter(x->
-                        (maLop.isEmpty() || x.getMaLop().equals(maLop))
+                        (maLop.isEmpty() || (x.getMaLop() != null && x.getMaLop().equalsIgnoreCase(maLop)))
                                 &&
                                 (hocKy==0 || x.getHocKy()==hocKy)
                                 &&
@@ -46,9 +46,9 @@ public class HocPhiService {
 
     public List<String> getNamHocByMaLop(String maLop){
 
-        return hocPhiRepository.findAll()
+        return hocPhiRepository.findAllWithDetails()
                 .stream()
-                .filter(x -> maLop.equals(x.getMaLop()))
+                .filter(x -> x.getMaLop() != null && x.getMaLop().equalsIgnoreCase(maLop))
                 .map(HocPhi::getNamHoc)
                 .distinct()
                 .toList();

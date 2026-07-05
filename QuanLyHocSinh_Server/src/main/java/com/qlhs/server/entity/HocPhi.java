@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.qlhs.server.entity.HocSinh;
 
 @Entity
 @Table(name = "HocPhi")
@@ -20,8 +21,21 @@ public class HocPhi {
     @Column(name = "MaHS", length = 50)
     private String maHS;
 
-    @Column(name = "MaLop", length = 50)
+    @Transient
     private String maLop;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MaHS", insertable = false, updatable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private HocSinh hocSinh;
+
+    public String getMaLop() {
+        return (hocSinh != null) ? hocSinh.getMaLop() : this.maLop;
+    }
+
+    public void setMaLop(String maLop) {
+        this.maLop = maLop;
+    }
 
     @Column(name = "HocKy")
     private int hocKy;

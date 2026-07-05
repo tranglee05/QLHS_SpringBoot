@@ -10,8 +10,13 @@ import java.util.List;
 
 @Repository
 public interface HocPhiRepository extends JpaRepository<HocPhi, Integer> {
-    List<HocPhi> findByMaHS(String maHS);
-    @Query("SELECT t FROM HocPhi t WHERE " +
-            "LOWER(t.maLop) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT t FROM HocPhi t JOIN FETCH t.hocSinh")
+    List<HocPhi> findAllWithDetails();
+
+    @Query("SELECT t FROM HocPhi t JOIN FETCH t.hocSinh WHERE t.maHS = :maHS")
+    List<HocPhi> findByMaHS(@Param("maHS") String maHS);
+
+    @Query("SELECT t FROM HocPhi t JOIN FETCH t.hocSinh WHERE " +
+            "LOWER(t.hocSinh.maLop) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<HocPhi> searchByKeyword(@Param("keyword") String keyword);
 }
