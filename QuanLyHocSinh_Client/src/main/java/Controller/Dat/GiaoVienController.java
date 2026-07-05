@@ -2,7 +2,6 @@ package Controller.Dat;
 
 import Api.GiaoVienApi;
 import Api.ToHopMonApi;
-import Dao.ToHopMonDAO;
 import Model.Giaovien;
 import Model.ToBoMon;
 import View.Dat.QuanLyGiaoVienPanel;
@@ -62,18 +61,13 @@ public class GiaoVienController {
 
     private void loadComboBox() {
 
-        try {
-            List<ToBoMon> list = toHopDAO.getAll();
-            for (ToBoMon t : list) {
-                view.getCboMaToHop().addItem(t);
-            }
-        } catch (Exception e) {
+        view.getCboMaToHop().removeAllItems();
 
-            JOptionPane.showMessageDialog(view,"Không tải được danh sách tổ bộ môn");
+        List<ToBoMon> list = toHopDAO.getAll();
 
+        for (ToBoMon t : list) {
+            view.getCboMaToHop().addItem(t);
         }
-
-
     }
 
     private void loadTable() {

@@ -41,6 +41,9 @@ public interface LopRepository extends JpaRepository<Lop, String> {
             nativeQuery = true)
     Map<String, Object> findByMaLopWithGVCN(@Param("maLop") String maLop);
 
+    @Query("SELECT DISTINCT l.nienKhoa FROM Lop l ORDER BY l.nienKhoa")
+    List<String> findDistinctNienKhoa();
+
     // JpaRepository đã có sẵn:
     // save(Lop lop)
     // findById(String maLop)

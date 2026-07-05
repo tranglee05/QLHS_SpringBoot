@@ -29,6 +29,11 @@ public class LopRestController {
         return lopService.searchLop(keyword);
     }
 
+    @GetMapping("/nienkhoa")
+    public List<String> getDistinctNienKhoa() {
+        return lopService.getDistinctNienKhoa();
+    }
+
     // Lấy theo mã
     @GetMapping("/{maLop}")
     public Map<String, Object> getLopById(

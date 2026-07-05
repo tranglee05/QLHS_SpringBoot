@@ -1,5 +1,6 @@
 package Dao;
 
+/*
 import Connection.ConnectDB;
 import Model.ToBoMon;
 import java.sql.*;
@@ -61,3 +62,4 @@ public class ToHopMonDAO {
         } catch (Exception e) { e.printStackTrace(); return false; }
     }
 }
+*/

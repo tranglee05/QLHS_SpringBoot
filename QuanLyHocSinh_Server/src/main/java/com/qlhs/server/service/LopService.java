@@ -38,4 +38,8 @@ public class LopService {
     public void deleteLop(String maLop) {
         lopRepository.deleteById(maLop);
     }
+
+    public List<String> getDistinctNienKhoa() {
+        return lopRepository.findDistinctNienKhoa();
+    }
 }
