@@ -11,15 +11,11 @@ import javax.imageio.ImageIO;
 import java.awt.AlphaComposite;
 import java.awt.RenderingHints;
 import java.awt.FontMetrics;
-
-import Controller.HaTrang.Hocphicontroller;
-import Controller.HaTrang.Phuckhaocontroller;
-import Controller.HaTrang.Thongbaocontroller;
 import Model.Auth;
 import Model.HocSinh;
 import Model.Giaovien;
-import Api.HocSinhApi;
-import Api.GiaoVienApi;
+import Api.Đai.HocSinhApi;
+import Api.Đat.GiaoVienApi;
 import View.Tien.HanhKiemPanel;
 import View.LoginView;
 import Controller.Dai.LoginController;
@@ -421,13 +417,16 @@ public class MainFormNew extends JFrame {
             new LichThiController(view); viewToShow = view;
         } else if (formCode.equals("FormHocPhi")) {
             QuanLyHocPhiPanel view = new QuanLyHocPhiPanel();
-            new Hocphicontroller(view);viewToShow = view;
+            new Controller.HaTrang.Hocphicontroller(view);
+            viewToShow = view;
         } else if (formCode.equals("FormThongBao")) {
             QuanlyThongbaoPanel view = new QuanlyThongbaoPanel();
-            new Thongbaocontroller(view);viewToShow = view;
+            new Controller.HaTrang.Thongbaocontroller(view);
+            viewToShow = view;
         } else if (formCode.equals("FormPhucKhao")) {
             QuanLyPhucKhaoPanel view = new QuanLyPhucKhaoPanel();
-            new Phuckhaocontroller(view);viewToShow = view;
+            new Controller.HaTrang.Phuckhaocontroller(view);
+            viewToShow = view;
         } else if (formCode.equals("FormMonHoc")) {
             FrmMonHoc panel = new FrmMonHoc();
             new MonHocController(panel); viewToShow = panel;
