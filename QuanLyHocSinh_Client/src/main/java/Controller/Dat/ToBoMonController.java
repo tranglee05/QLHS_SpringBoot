@@ -12,27 +12,21 @@ public class ToBoMonController {
 
     private QuanLyToBoMonPanel view;
     private ToHopMonApi dao;
-    private String currentMode = ""; // "ADD" hoặc "EDIT"
+    private String currentMode = ""; 
 
     public ToBoMonController(QuanLyToBoMonPanel view) {
         this.view = view;
         this.dao = new ToHopMonApi();
-
-        // 1. Gán sự kiện cho các nút
         initEvents();
-
-        // 2. Tải dữ liệu ban đầu
         loadData();
     }
 
-    // Hàm load data từ DAO đổ về View
     private void loadData() {
         List<ToBoMon> list = dao.getAll();
         view.setTableData(list);
     }
 
     private void initEvents() {
-        // --- Sự kiện click bảng ---
         view.getTableTBM().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -44,38 +38,30 @@ public class ToBoMonController {
             }
         });
 
-        // --- Nút Tìm Kiếm ---
         view.getBtnTim().addActionListener(e -> {
             String keyword = view.getTxtTimKiem().getText().trim();
-
-            // Nếu người dùng để trống và nhấn tìm kiếm -> Load lại toàn bộ dữ liệu
             if (keyword.isEmpty()) {
                 loadData();
                 return;
             }
-
-            // Gọi hàm tìm kiếm từ DAO (Giả sử bạn có hàm search trong ToHopMonApi)
-            // Nếu chưa có, bạn cần tạo thêm hàm: public List<ToBoMon> search(String keyword) { ... }
             List<ToBoMon> resultList = dao.search(keyword);
 
             if (resultList != null && !resultList.isEmpty()) {
                 view.setTableData(resultList);
             } else {
                 JOptionPane.showMessageDialog(view, "Không tìm thấy tổ bộ môn nào khớp với từ khóa!");
-                view.setTableData(resultList); // Cập nhật bảng thành rỗng (tùy chọn)
+                view.setTableData(resultList); 
             }
         });
 
-        // --- Nút Thêm ---
         view.getBtnThem().addActionListener(e -> {
             view.clearForm();
             currentMode = "ADD";
-            view.setButtonState(false); // Chuyển sang trạng thái nhập liệu
+            view.setButtonState(false); 
             view.getTxtMaToHop().setEnabled(true);
             view.getTxtMaToHop().requestFocus();
         });
 
-        // --- Nút Sửa ---
         view.getBtnSua().addActionListener(e -> {
             if (view.getTableTBM().getSelectedRow() == -1) {
                 JOptionPane.showMessageDialog(view, "Vui lòng chọn dòng cần sửa!");
@@ -83,11 +69,10 @@ public class ToBoMonController {
             }
             currentMode = "EDIT";
             view.setButtonState(false);
-            view.getTxtMaToHop().setEnabled(false); // Khóa mã
+            view.getTxtMaToHop().setEnabled(false);
             view.getTxtTenToHop().requestFocus();
         });
 
-        // --- Nút Xóa ---
         view.getBtnXoa().addActionListener(e -> {
             int r = view.getTableTBM().getSelectedRow();
             if (r == -1) {
@@ -110,7 +95,6 @@ public class ToBoMonController {
             }
         });
 
-        // --- Nút Lưu ---
         view.getBtnLuu().addActionListener(e -> {
             String ma = view.getTxtMaToHop().getText().trim();
             String ten = view.getTxtTenToHop().getText().trim();
@@ -120,7 +104,7 @@ public class ToBoMonController {
                 return;
             }
 
-            ToBoMon tbm = new ToBoMon(ma, ten, ""); // Model
+            ToBoMon tbm = new ToBoMon(ma, ten, "");
             boolean kq = false;
 
             if ("ADD".equals(currentMode)) {
@@ -132,21 +116,19 @@ public class ToBoMonController {
             if (kq) {
                 JOptionPane.showMessageDialog(view, "Lưu thành công!");
                 loadData();
-                view.setButtonState(true); // Trở về trạng thái bình thường
+                view.setButtonState(true);
                 view.clearForm();
                 currentMode = "";
             } else {
                 JOptionPane.showMessageDialog(view, "Lưu thất bại! Có thể mã đã tồn tại.");
             }
         });
-
-        // --- Nút Hủy ---
         view.getBtnHuy().addActionListener(e -> {
             view.setButtonState(true);
             view.clearForm();
             currentMode = "";
             view.getTableTBM().clearSelection();
-            loadData(); // Load lại data đề phòng đang ở chế độ xem kết quả tìm kiếm
+            loadData();
         });
     }
 }
