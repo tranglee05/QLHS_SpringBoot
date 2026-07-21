@@ -61,7 +61,16 @@ public class TaiKhoanApi {
                     client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                return gson.fromJson(response.body(), TaiKhoan.class);
+                // Phản hồi bây giờ là JSON chứa token và user
+                // { "token": "...", "user": {...} }
+                com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
+                if (jsonObject.has("token")) {
+                    Model.Auth.token = jsonObject.get("token").getAsString();
+                }
+                if (jsonObject.has("user")) {
+                    return gson.fromJson(jsonObject.get("user"), TaiKhoan.class);
+                }
+                return gson.fromJson(response.body(), TaiKhoan.class); // Dự phòng nếu server trả về trực tiếp
             }
 
         } catch (Exception e) {
@@ -75,10 +84,15 @@ public class TaiKhoanApi {
 
         try {
 
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                     .uri(URI.create(SERVER_URL))
-                    .GET()
-                    .build();
+                    .GET();
+            
+            if (Model.Auth.token != null && !Model.Auth.token.isEmpty()) {
+                requestBuilder.header("Authorization", "Bearer " + Model.Auth.token);
+            }
+
+            HttpRequest request = requestBuilder.build();
 
             HttpResponse<String> response =
                     client.send(request, HttpResponse.BodyHandlers.ofString());

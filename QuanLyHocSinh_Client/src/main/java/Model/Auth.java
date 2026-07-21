@@ -5,11 +5,13 @@ public class Auth {
     public static String currentUser = "";
     public static String currentRole = "";
     public static String maNguoiDung = "";
+    public static String token = ""; // Thêm token JWT
 
     public static void clear() {
         currentUser = "";
         currentRole = "";
         maNguoiDung = "";
+        token = "";
     }
 
     public static boolean isLogin() {
